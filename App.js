@@ -5,14 +5,38 @@ import {  createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 
-import ScreenA from './screens/ScreenA';
-import ScreenB from './screens/ScreenB';
+import Login from './screens/login';
+import Home from './screens/home';
+import Colors from './constants/Colors';
+
+const screens = {
+  Login:
+  {
+    screen: Login,
+      navigationOptions:
+      {
+        title: 'Login',
+        headerStyles: { backgroundColor: Platform.OS === 'android' ? Colors.primary : '',
+        headerTintColor: Platform.OS === 'android' ? 'white' :  Colors.primary
+      },
+  }
+},
+
+  Home:
+  {
+      screen: Home,
+      navigationOptions:
+      {
+        title: 'Home'
+
+      }
+  }
+
+}
 
 
-const stackNavigator = createStackNavigator({
-  screenA: ScreenA,
-  screenB: ScreenB
-})
+const stackNavigator = createStackNavigator(screens);
+
 
 
 const App = createAppContainer(stackNavigator)

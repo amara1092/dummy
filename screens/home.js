@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, Button } from 'react-native';
 
-const ScreenB = ({ navigation }) => {
+const Home = ({ navigation }) => {
 
 
     return (
@@ -15,4 +15,4 @@ const ScreenB = ({ navigation }) => {
     )
 }
 
-export default ScreenB;
+export default Home;
