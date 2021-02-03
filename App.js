@@ -1,6 +1,6 @@
 //import { StatusBar } from 'expo-status-bar';
 //import React from 'react';
-//import { StyleSheet, Text, View } from 'react-native';
+import {BackHandler} from 'react-native';
 import {  createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 //import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -8,19 +8,16 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Login from './screens/login';
 import Home from './screens/home';
 import Colors from './constants/Colors';
+import Header from './shared/head';
+import React from 'react';
 
 const screens = {
-  Login:
-  {
+  Login: {
     screen: Login,
       navigationOptions:
       {
-        title: 'Login',
-        headerStyles: { backgroundColor: Platform.OS === 'android' ? Colors.primary : '',
-        headerTintColor: Platform.OS === 'android' ? 'white' :  Colors.primary
-
-      },
-  }
+        title: null,
+      }
 },
 
   Home:
@@ -28,12 +25,16 @@ const screens = {
       screen: Home,
       navigationOptions:
       {
-        title: 'Home'
+        headerTitle: () => <Header />,
+        headerLeft:null
 
       }
   }
 
 }
+
+
+  
 
 
 const stackNavigator = createStackNavigator(screens);

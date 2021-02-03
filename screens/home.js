@@ -1,18 +1,25 @@
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
 
-const Home = ({ navigation }) => {
+export default function Home ({ navigation }) {
+
+ const pressHandler = () => 
+ {
+   navigation.navigate('Login')
+ }
 
 
-    return (
-        <View>
-            <Text>Screen B</Text>
-            <Text>ID: {JSON.stringify(navigation.getParam('itemID'))}</Text>
-            <Text>Param: {JSON.stringify(navigation.getParam('otherParams'))}</Text>
-            <Button title="Go Back" onPress={() => navigation.goBack()}></Button>
-
-        </View>
-    )
+   return (
+    <View style={styles.container}>
+    <Text>Home</Text>
+    <Button title="Login" color="#FF0000" onPress={pressHandler}/>
+  </View>
+);
 }
 
-export default Home;
+
+const styles = StyleSheet.create({
+    
+  });
+  

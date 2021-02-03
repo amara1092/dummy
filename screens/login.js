@@ -1,41 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
 
-const Login = ({ navigation }) => {
- 
+export default function login({ navigation }) {
+
+ const pressHandler = () => 
+ {
+   navigation.navigate('Home')
+ }
+
+
    return (
     <View style={styles.container}>
     
-    <View style={styles.image}>
-      <Image source={require('../assets/obelisks.png')}/>
-    </View>
+      <View style={styles.image}>
+        <Image source={require('../assets/obelisks.png')}/>
+      </View>
 
-    <View style={styles.login}>
-        <TextInput
-          placeholder='Login'
-        />
-    </View>
+      <View style={styles.login}>
+          <TextInput placeholder='Login'/>
+      </View>
 
-    <View style={styles.password}>
-        <TextInput
-          placeholder='Password'
-        />
-    </View>
-   
-    <Button title="Login" color="#FF0000" onPress={() => navigation.navigate('Home')}></Button>
+      <View style={styles.password}>
+          <TextInput placeholder='Password'/>
+      </View>
+    
+      <Button title="Login" color="#FF0000" onPress={pressHandler}/>
 
-    <View style={styles.words}>
-        <Text>Forgot password</Text>
-        <StatusBar style="auto" />
-    </View>
+      <View style={styles.words}>
+          <Text>Forgot password</Text>
+      </View>
 
   </View>
 );
 }
 
-
-export default Login;
 
 const styles = StyleSheet.create({
     container: {
