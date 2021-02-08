@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Picker from '../src/picker';
-//import CheckBox from '../src/checkBox';
+import CheckBox from '../src/checkBox';
 
 export default function Lunch ({ navigation }) {
 
@@ -20,8 +20,9 @@ export default function Lunch ({ navigation }) {
    return (
     <View style={styles.container}>
       <Picker/>
+      
 
-
+      <CheckBox/>
     <View style={styles.accept}>
       <Button title="Accept" color="#0E6DE8" onPress={acceptHandler}/>
     </View>
@@ -44,6 +45,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
+    text: {
+      marginTop:4,
+      height: 20, 
+  },
+
       accept: {
         marginLeft:180,
         marginTop:-24,
@@ -53,7 +59,7 @@ const styles = StyleSheet.create({
 
       cancel: {
         marginLeft:-180,
-        marginTop:-22,
+        marginTop:-20,
         height: 50, 
         width: 130
     },

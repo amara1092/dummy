@@ -1,43 +1,42 @@
-import React, { useState } from "react";
-import { CheckBox } from "@react-native-community/checkbox";
-import React, {Component} from 'react'
+import * as React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { Checkbox } from 'react-native-paper';
 
-
-const Check = () => {
-  const [isSelected, setSelection] = useState(false);
-}
-class PickerComponent extends Component{
+const CheckBoxComponent = () => {
+  const [checked, setChecked] = React.useState(false);
 
   return (
     <View style={styles.container}>
-      <View style={styles.checkboxContainer}>
-        <CheckBox
-          value={isSelected}
-          onValueChange={setSelection}
-          style={styles.checkbox}
-        />
-        <Text style={styles.label}>Do you like React Native?</Text>
+      <View style={styles.check}>
+          <Checkbox
+              status={checked ? 'checked' : 'unchecked'}
+              onPress={() => {
+              setChecked(!checked);
+            }}
+          />
+           <Text style={styles.text}>Same lunch for the week?</Text>
       </View>
-    </View>
+      </View>
   );
 };
 
+export default CheckBoxComponent;
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  checkboxContainer: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-  checkbox: {
-    alignSelf: "center",
-  },
-  label: {
-    margin: 8,
-  },
-});
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }, 
 
-export default Check;
+    check: {
+      alignSelf: "center",
+      marginTop:-258,
+      marginLeft:-30
+    },
+
+    text: {
+      marginTop:-28,
+      marginLeft:40
+    }
+  });

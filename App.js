@@ -9,6 +9,7 @@ import Login from './screens/login';
 import Home from './screens/home';
 import Lunch from './screens/lunch';
 import Hour from './screens/hours';
+import Homend from './screens/homend';
 import Colors from './constants/Colors';
 import Header from './shared/head';
 import React from 'react';
@@ -28,7 +29,7 @@ const screens = {
       navigationOptions:({ navigation }) => {
       return {
         headerTitle: () => <Header navigation={navigation} title='Timesheet' />,
-        headerLeft: () => null
+        headerLeft: null
             }
       }
   },
@@ -54,6 +55,16 @@ Hour:
           }
     }
 },
+Homend:
+  {
+    screen: Homend,
+    navigationOptions:({ navigation }) => {
+    return {
+      headerTitle: () => <Header navigation={navigation} title='Timesheets' />,
+      headerLeft:null
+          }
+    }
+}
 
 
 }

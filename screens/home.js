@@ -23,6 +23,10 @@ export default function Home ({ navigation }) {
             <MaterialIcons name='add-circle-outline' size={55} onPress={pressHandler}/>
         </View>
 
+        <View style={styles.text1}>
+        <Text>You have no entries for this week</Text>
+        </View>
+
 
   </View>
 );
@@ -48,6 +52,13 @@ const styles = StyleSheet.create({
         color:'white',
         marginBottom:200,
         justifyContent: 'center'
-        }
+        },
+
+        text1:{
+          alignItems: 'center',
+          marginTop: -50,
+          marginBottom: 75,
+          justifyContent: 'center'
+          },
   });
   

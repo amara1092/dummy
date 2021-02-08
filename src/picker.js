@@ -12,8 +12,21 @@ class PickerComponent extends Component{
 
     render(){
         return (
+            
             <View style={styles.container}>
-            <Text>From</Text>
+             <View style={styles.startlunch}>
+                <Text>
+                    Start Lunch Time
+                </Text>
+            </View>  
+
+            <View style={styles.finishlunch}>
+                <Text>
+                    Finish Lunch Time
+                </Text>
+            </View>  
+
+            <View> 
                 <Picker style={styles.date}
                     selectedValue={this.state.date}
                     onValueChange=
@@ -69,7 +82,8 @@ class PickerComponent extends Component{
                             <Picker.Item label="23:00" value="47" />
                             <Picker.Item label="23:30" value="48" />
                             </Picker>
-
+                            </View>
+                            <View>
                     <Picker style={styles.datetwo}
                     selectedValue={this.state.datetwo}
                     onValueChange=
@@ -126,6 +140,7 @@ class PickerComponent extends Component{
                             <Picker.Item label="23:30" value="48" />
                             </Picker>
             </View>
+            </View> 
 
 
         )
@@ -145,9 +160,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
       }, 
 
-      date: {
-        marginTop:-100,
+      startlunch: {
+        marginTop:250,
+        marginBottom:-30,
         marginLeft:-180,
+        height: 50, 
+        width: 130
+      }, 
+
+      finishlunch: {
+        marginTop:-20,
+        marginBottom:-30,
+        marginLeft:180,
+        height: 50, 
+        width: 130
+      }, 
+
+      date: {
+        marginTop:-0,
+        marginLeft:-160,
         height: 50, 
         width: 130
       }, 
