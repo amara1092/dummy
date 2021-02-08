@@ -7,6 +7,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import Login from './screens/login';
 import Home from './screens/home';
+import Lunch from './screens/lunch';
+import Hour from './screens/hours';
 import Colors from './constants/Colors';
 import Header from './shared/head';
 import React from 'react';
@@ -23,13 +25,36 @@ const screens = {
   Home:
   {
       screen: Home,
-      navigationOptions:
-      {
-        headerTitle: () => <Header />,
-        headerLeft:null
-
+      navigationOptions:({ navigation }) => {
+      return {
+        headerTitle: () => <Header navigation={navigation} title='Timesheet' />,
+        headerLeft: () => null
+            }
       }
-  }
+  },
+  
+  Lunch:
+  {
+    screen: Lunch,
+    navigationOptions:({ navigation }) => {
+    return {
+      headerTitle: () => <Header navigation={navigation} title='Lunch Entry' />,
+      headerLeft:null
+          }
+    }
+},
+
+Hour:
+  {
+    screen: Hour,
+    navigationOptions:({ navigation }) => {
+    return {
+      headerTitle: () => <Header navigation={navigation} title='Enter hours' />,
+      headerLeft:null
+          }
+    }
+},
+
 
 }
 

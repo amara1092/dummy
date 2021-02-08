@@ -13,7 +13,7 @@ navigation.openDrawer();
     <View style={styles.head}>
             <MaterialIcons name='menu' size={35} onPress={openmenu} style={styles.icon} />
         <View>
-                <Text style={styles.headText}>Timesheets</Text>
+                <Text style={styles.headText}>{title}</Text>
         
 
         </View>
@@ -48,6 +48,7 @@ letterSpacing: 1,
 
 icon:{
 position:'absolute',
+color:'white',
  left: 16
 }
 
