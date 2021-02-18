@@ -16,6 +16,15 @@ export default function Homend ({ navigation }) {
  {
    navigation.navigate('Entry')
  }
+ const acceptHandler = () => 
+ {
+   navigation.navigate('Hour')
+ }
+ const cancelHandler = () => 
+ {
+   navigation.navigate('Home')
+ }
+
 
  return (
    <ScrollView>
@@ -137,6 +146,23 @@ export default function Homend ({ navigation }) {
       <Divider />
     </List.Section>
        </View>
+
+       <View style={styles.edit}>
+      <Button title="Edit" color="#09253a" onPress={acceptHandler}/>
+    </View>
+
+    <View style={styles.add}>
+      <Button title="Add" color="#09253a" onPress={cancelHandler}/>
+    </View>
+
+    <View style={styles.delete}>
+      <Button title="Delete" color="#FF0000" onPress={cancelHandler}/>
+    </View>
+
+
+    <View style={styles.submit}>
+    <Button title="Submit" color="#4bf542" onPress={pressHandler}/>
+    </View>
       
   </View>
    </ScrollView>
@@ -176,18 +202,33 @@ const styles = StyleSheet.create({
         color: 'white',
         borderRadius: 5
       },
-      accept: {
-        marginLeft: -20,
-        marginTop:-29,
-        height: 20, 
-        width: 130
-    },
 
-      cancel: {
-        marginLeft: 299,
-        marginTop:-70,
-        height: 50, 
-        width: 130
-    },
+
+    edit: {
+      marginLeft:130,
+      marginTop:-24,
+      height: 20, 
+      width: 100,
+  },
+
+    add: {
+      marginLeft:10,
+      marginTop:-20,
+      height: 50, 
+      width: 100
+  },
+  delete: {
+    marginLeft:250,
+    marginTop:-50,
+    height: 50, 
+    width: 100
+},
+
+submit: {
+  marginLeft:250,
+  marginTop:0,
+  height: 50, 
+  width: 100
+}
   });
   

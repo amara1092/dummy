@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Calenders from '../src/Calenders';
+import WeekSelect from '../src/weekend';
 
 export default function Home ({ navigation }) {
 
@@ -14,7 +15,7 @@ export default function Home ({ navigation }) {
 
    return (
     <View style={styles.container}>
-<Calenders/>
+<WeekSelect/>
         <View style={styles.text}>
         <Text>Add an entry</Text>
         </View>

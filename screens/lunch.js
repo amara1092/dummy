@@ -20,9 +20,13 @@ export default function Lunch ({ navigation }) {
    return (
     <View style={styles.container}>
       <Picker/>
+ 
       
 
       <CheckBox/>
+
+
+
     <View style={styles.accept}>
       <Button title="Accept" color="#0E6DE8" onPress={acceptHandler}/>
     </View>

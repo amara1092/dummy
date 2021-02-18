@@ -29,7 +29,7 @@ const screens = {
       navigationOptions:({ navigation }) => {
       return {
         headerTitle: () => <Header navigation={navigation} title='Timesheet' />,
-        headerLeft: null
+        headerLeft:() => null
             }
       }
   },
@@ -40,7 +40,7 @@ const screens = {
     navigationOptions:({ navigation }) => {
     return {
       headerTitle: () => <Header navigation={navigation} title='Lunch Entry' />,
-      headerLeft:null
+      headerLeft:() => null
           }
     }
 },
@@ -51,7 +51,7 @@ Hour:
     navigationOptions:({ navigation }) => {
     return {
       headerTitle: () => <Header navigation={navigation} title='Enter hours' />,
-      headerLeft:null
+      headerLeft:() => null
           }
     }
 },
@@ -61,7 +61,7 @@ Homend:
     navigationOptions:({ navigation }) => {
     return {
       headerTitle: () => <Header navigation={navigation} title='Timesheets' />,
-      headerLeft:null
+      headerLeft:() =>null
           }
     }
 }
