@@ -3,35 +3,25 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import CDPicker from '../src/CDpicker';
-import Forms from '../src/forms';
+import Tester from '../src/tester';
 
-export default function Hour ({ navigation }) {
+export default function Test ({ navigation }) {
 
  const acceptHandler = () => 
  {
-   navigation.navigate('Homend')
+   navigation.navigate('Home')
  }
  const cancelHandler = () => 
  {
-   navigation.navigate('Lunch')
+   navigation.navigate('Home')
  }
  
 
 
    return (
     <View style={styles.container}>
-    <CDPicker/>
-      <Forms/>
-      <Text>Description</Text>
-      <TextInput style={styles.input}/>
-    <View style={styles.accept}>
-      <Button title="Accept" color="#0E6DE8" onPress={acceptHandler}/>
-    </View>
-
-    <View style={styles.cancel}>
-      <Button title="Cancel" color="#FF0000" onPress={cancelHandler}/>
-    </View>
-
+    <Tester/>
+   
   </View>
 );
 }

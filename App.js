@@ -10,6 +10,7 @@ import Home from './screens/home';
 import Lunch from './screens/lunch';
 import Hour from './screens/hours';
 import Homend from './screens/homend';
+import Test from './screens/Tester';
 import Colors from './constants/Colors';
 import Header from './shared/head';
 import React from 'react';
@@ -61,6 +62,17 @@ Homend:
     navigationOptions:({ navigation }) => {
     return {
       headerTitle: () => <Header navigation={navigation} title='Timesheets' />,
+      headerLeft:() =>null
+          }
+    }
+},
+
+Test:
+  {
+    screen: Test,
+    navigationOptions:({ navigation }) => {
+    return {
+      headerTitle: () => <Header navigation={navigation} title='Tester' />,
       headerLeft:() =>null
           }
     }

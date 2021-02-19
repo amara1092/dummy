@@ -14,7 +14,7 @@ export default function Homend ({ navigation }) {
 
  const pressHandler = () => 
  {
-   navigation.navigate('Entry')
+   navigation.navigate('Test')
  }
  const acceptHandler = () => 
  {
