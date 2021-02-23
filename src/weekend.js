@@ -4,7 +4,7 @@ import { Constants } from 'expo';
 
 import WeekSelector from 'react-native-week-selector';
 
-export default class App extends React.Component {
+export default class WeekSelect extends React.Component {
 
   state = {
     selectedWeek: null,
@@ -37,8 +37,8 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   section: {
     height: 100,
-    width:400,
-    marginTop:-160,
+    width:370,
+    marginTop:-155,
     marginBottom: 30,
     backgroundColor: '#e8dddc',
   },

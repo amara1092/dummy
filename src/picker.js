@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, StyleSheet, Text} from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Text, Button} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Input } from 'react-native-elements';
+import CheckBox from '../src/checkBox';
+import { withNavigation } from 'react-navigation';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import XDate from 'xdate'; 
@@ -35,6 +38,31 @@ class ShiftTimingScreen extends Component {
         timePickerVisible: false,
     };
 
+    constructor(props) {
+        super(props);
+        this.state = {
+          days: "",
+          ToSTimeValue: null,
+          ToTimeValue: null,
+          educationLevel: "",
+          receivePromotion: false
+        };
+      }
+
+      async componentDidMount() {
+        try {
+          const result = JSON.parse(await AsyncStorage.getItem("personal_data"));
+    
+          // populate the data
+          this.setState({...result}); // you probably won't understand what is triple dot doing
+          // Google for Javascript object spreading syntax
+          // Checkout https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+    
+        } catch (error) {
+          alert(error.message)
+        }
+      }
+
     saveStartingTime = (value) => {
         console.log("saveStartingTime - value:", value);
         this.setState({
@@ -49,6 +77,25 @@ class ShiftTimingScreen extends Component {
             ToTimeValue: value,
         });
     };
+
+    acceptHandler() 
+    {
+        this.props.navigation.navigate('Hour');
+    }
+
+    cancelHandler() 
+    {
+        this.props.navigation.navigate('Home');
+    }
+    
+    UpdateContent = async () => {
+                    try {
+                    const result = await AsyncStorage.setItem("personal_data", JSON.stringify(this.state));
+                    this.acceptHandler();
+                    } catch (error) {
+                    alert(error.message);
+                    }
+        }
 
     fRenderDateTimePicker = (dateTimePickerVisible, visibilityVariableName, dateTimePickerMode, defaultValue, saveValueFunctionName ) => {
         // dateTimePickerVisible:   a flag, which is used to show/hide this DateTimePicker
@@ -177,6 +224,8 @@ class ShiftTimingScreen extends Component {
         );      
     }; 
 
+
+
     // This function formats date values. Obviously, using it is optional. 
     // If you decide to use it, remember that it needs the XDate library: 
     // import XDate from 'xdate';
@@ -225,6 +274,9 @@ class ShiftTimingScreen extends Component {
         }
     }
 
+    
+
+    
     render() {
         // 1. For the "Shift Start", Initial/Default value for the DateTimePicker 
         // // defaultShiftStartDateTime: (tomorrow's date at 9 AM)
@@ -240,7 +292,9 @@ class ShiftTimingScreen extends Component {
         defaultShiftEndDateTime.setHours(17);
         defaultShiftEndDateTime.setMinutes(0);
         defaultShiftEndDateTime.setSeconds(0);
+       
 
+        
         return (
                 <View>
                     {// This function would render the necessary DateTimePicker only if the relevant state variable is set (above)
@@ -278,10 +332,10 @@ class ShiftTimingScreen extends Component {
 
                      </View>
                             <Picker style={styles.datefive}
-                    selectedValue={this.state.datefive}
+                    selectedValue={this.state.days}
                     onValueChange=
                     {
-                        (itemValue, itemIndex) => this.setState({datefive: itemValue})
+                        (itemValue, itemIndex) => this.setState({days: itemValue})
                     }>
                             <Picker.Item label="Monday" value="monday" />
                             <Picker.Item label="Tuesday" value="tuesday" />
@@ -343,6 +397,19 @@ class ShiftTimingScreen extends Component {
 
                     </View>
 
+                    
+                    <CheckBox/>
+
+
+                    <View style={styles.accept}>
+                    <Button style={styles.updBtn} title="Update data" onPress={this.UpdateContent} />
+
+                    </View>
+
+                    <View style={styles.cancel}>
+                    <Button title="Cancel" color="#FF0000" onPress={this.cancelHandler}/>
+                    </View>
+
                    
 
                 </View>
@@ -382,9 +449,23 @@ const styles = StyleSheet.create({
       text: {
         marginTop:-28,
         marginLeft:40
-      }
+      },
+      accept: {
+        marginLeft:180,
+        marginTop:-24,
+        height: 20, 
+        width: 130
+    },
+
+      cancel: {
+        marginLeft:-180,
+        marginTop:-20,
+        height: 50, 
+        width: 130
+    }
+
     });
   
 
-export default ShiftTimingScreen;
+export default withNavigation(ShiftTimingScreen);
 

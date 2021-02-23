@@ -6,35 +6,9 @@ import Picker from '../src/picker';
 import CheckBox from '../src/checkBox';
 
 export default function Lunch ({ navigation }) {
-
- const acceptHandler = () => 
- {
-   navigation.navigate('Hour')
- }
- const cancelHandler = () => 
- {
-   navigation.navigate('Home')
- }
-
-
    return (
     <View style={styles.container}>
       <Picker/>
- 
-      
-
-      <CheckBox/>
-
-
-
-    <View style={styles.accept}>
-      <Button title="Accept" color="#0E6DE8" onPress={acceptHandler}/>
-    </View>
-
-    <View style={styles.cancel}>
-      <Button title="Cancel" color="#FF0000" onPress={cancelHandler}/>
-    </View>
-
   </View>
 );
 }
@@ -47,25 +21,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center'
-    },
-
-    text: {
-      marginTop:4,
-      height: 20, 
-  },
-
-      accept: {
-        marginLeft:180,
-        marginTop:-24,
-        height: 20, 
-        width: 130
-    },
-
-      cancel: {
-        marginLeft:-180,
-        marginTop:-20,
-        height: 50, 
-        width: 130
     },
       
   });

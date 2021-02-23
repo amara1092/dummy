@@ -20,18 +20,7 @@ export default function Hour ({ navigation }) {
 
    return (
     <View style={styles.container}>
-    <CDPicker/>
       <Forms/>
-      <Text>Description</Text>
-      <TextInput style={styles.input}/>
-    <View style={styles.accept}>
-      <Button title="Accept" color="#0E6DE8" onPress={acceptHandler}/>
-    </View>
-
-    <View style={styles.cancel}>
-      <Button title="Cancel" color="#FF0000" onPress={cancelHandler}/>
-    </View>
-
   </View>
 );
 }
@@ -46,27 +35,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
-    input: {
-     borderWidth: 1,
-     borderColor: '#777',
-     padding:8,
-     height: 150, 
-     width: 350
-  },
-
-      accept: {
-        marginLeft:180,
-        marginTop:-24,
-        height: 20, 
-        width: 130
-    },
-
-      cancel: {
-        marginLeft:-180,
-        marginTop:-22,
-        height: 50, 
-        width: 130
-    },
-      
+  
   });
   

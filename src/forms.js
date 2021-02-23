@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, StyleSheet, Text} from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Text, Button, TextInput} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Input } from 'react-native-elements';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import XDate from 'xdate'; 
+import XDate from 'xdate';
+import { withNavigation } from 'react-navigation';
+
 
 
 class ShiftTimingScreen extends Component {
@@ -12,7 +14,9 @@ class ShiftTimingScreen extends Component {
     state = {
 
         dayoftheweek:'',
-
+        userType: '',
+        name: '',
+        description: '',
         // The values, which we get from each of the DateTimePickers. 
         // These values can be saved into your app's state. 
         ToSTimeValue: null,
@@ -49,6 +53,67 @@ class ShiftTimingScreen extends Component {
             ToTimeValue: value,
         });
     };
+
+    async componentDidMount() {
+        try {
+          const result = JSON.parse(await AsyncStorage.getItem("personal_data"));
+      
+          // populate the data
+          this.setState({...result}); // you probably won't understand what is triple dot doing
+          // Google for Javascript object spreading syntax
+          // Checkout https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+      
+        } catch (error) {
+          alert(error.message)
+        }
+      }
+
+      acceptHandler() 
+    {
+        this.props.navigation.navigate('Homend');
+    }
+    cancelHandler() 
+    {
+    this.props.navigation.navigate('Lunch');
+    }
+    handleDesription = (text) => {
+        this.setState({description: text})
+    }
+
+    UpdateContent = async () => {
+            try {
+            const result = await AsyncStorage.setItem("personal_data", JSON.stringify(this.state));
+            alert("Success");
+            this.acceptHandler();
+            } catch (error) {
+            alert(error.message);
+            }  
+    }
+
+
+      renderUserNames() {
+        if(this.state.userType=='Freelancer'){
+         return [<Picker.Item key="uniqueID8" label="CE005 ~ Woodcock Hill" value="Freelancer 1" />,
+                <Picker.Item key="uniqueID7" label="CE006 ~ Crusheen knocknamucky" value="Freelancer 2" />,
+               <Picker.Item key="uniqueID6" label="CE007 ~ Lack West" value="Freelancer 3" />,
+               <Picker.Item key="uniqueID5" label="CE008 ~ Dangan Ballyvaughan" value="Freelancer 4" />,
+               <Picker.Item key="uniqueID4" label="CE009 ~ Glenagall" value="Freelancer 5" />]
+        }
+      
+        else if(this.state.userType=='ABO101597'){
+          return [<Picker.Item key="uniqueID3" label="CLS001 ~ Cluster 1 OHL" value="ABO101597 1" />
+                ]
+         }
+      
+        else{
+             return [<Picker.Item key="uniqueID1" label="Client 1" value="Client 1" />,
+              <Picker.Item key="uniqueID2" label="Client 2" value="Client 2" />]
+          }
+      }
+
+
+
+
 
     fRenderDateTimePicker = (dateTimePickerVisible, visibilityVariableName, dateTimePickerMode, defaultValue, saveValueFunctionName ) => {
         // dateTimePickerVisible:   a flag, which is used to show/hide this DateTimePicker
@@ -241,8 +306,10 @@ class ShiftTimingScreen extends Component {
         defaultShiftEndDateTime.setMinutes(0);
         defaultShiftEndDateTime.setSeconds(0);
 
+        let options=this.renderUserNames();
+
         return (
-                <View>
+                <View style={styles.container}>
                     {// This function would render the necessary DateTimePicker only if the relevant state variable is set (above)
                     this.fRenderDateTimePicker(
                         this.state.isStartingDateTimePickerVisible,
@@ -315,33 +382,101 @@ class ShiftTimingScreen extends Component {
                         // YOU NEED TO REPLACE IT WITH SOMETHING RELEVANT TO YOUR APP. 
                         this.saveEndingTime,
                     )}
-
                     </View>
 
-                   
-
+                <View style={styles.btn}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.titleStyle}>Project No</Text>
+              <View style={styles.pickerStyle}>
+                  {<Picker
+                      mode='dropdown'
+                      selectedValue={this.state.userType}
+                      onValueChange={(itemValue, itemIndex) =>
+                          this.setState({ userType: itemValue })
+                      }>
+                      <Picker.Item key="uniqueID9" label="Please Select" value="" />
+                      <Picker.Item key="uniqueID10" label="VOD103015 ~ Assure Provide engsupport Oct 1st to Oct 31st 2019" value="Freelancer" />
+                      <Picker.Item key="uniqueID11" label="ABO101597 ~ Over head Line works Cluster 1 ~ CLS001 ~ Cluster1 OHL" value="ABO101597" />
+                      <Picker.Item key="uniqueID12" label="Client" value="Client" />
+                  </Picker>}
+              </View>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.titleStyle}>Name</Text>
+              <View style={styles.pickerStyle}>
+                  {<Picker
+                      mode='dropdown'
+                      selectedValue={this.state.name}
+                      onValueChange={(itemValue, itemIndex) =>
+                          this.setState({ name: itemValue })
+                      }>
+                      <Picker.Item label="Please Select" value="" />
+                           {options}
+  
+                  </Picker>}
+              </View>
+          </View>
+         </View>
+            <View>
+                <View style={styles.accept}>
+                     <Button backgroundColor='#000000' color='#1df557' title="Confirm" onPress={
+                    this.UpdateContent
+            } />
                 </View>
+                <View style={styles.cancel}>
+                <Button title="Cancel" color="#FF0000" onPress={this.cancelHandler}/>
+                </View>
+            </View>
+
+            <View style={styles.desprc}>
+            <TextInput
+                        underlineColorAndroid = "transparent" 
+                        placeholder="Description"
+                        placeholderTextColor = "#9a73ef"
+                        onChangeText={this.handleDesription}
+                        style={styles.input}     
+                        />
+            </View>
+
+           
+           
+        </View>
         );
     } // end of: render()
 } // end of: component
 
 const styles = StyleSheet.create({
-
-
     props: {
-       alignItems:'center',
-       justifyContent:'center'
+      alignItems:'center',
+      justifyContent:'center'
        },
+       desprc: {
+        marginTop: -110,
+        marginBottom: 800,
+        width: 300,
+       },
+       input: {
+        borderWidth: 1,
+        borderColor: '#7a42f4',
+        padding:20,
+        height: 150, 
+        width: 300,
+        paddingBottom: 100,
+        marginTop: -125,
+        marginBottom: 800,
+        borderWidth: 1,
+        color: '#000000'
+     },
 
       startlunch: {
-       marginTop: -250,
-       marginLeft:-180,
+       marginTop: 50,
+       marginLeft:-170,
        
       },
 
       endlunch: {
-        marginTop:-250,
-        marginLeft:140
+        marginTop:-88,
+        marginLeft:100
        },
 
        dayoftheweekTitle: {
@@ -357,8 +492,45 @@ const styles = StyleSheet.create({
       text: {
         marginTop:-28,
         marginLeft:40
-      }
+      },
+      container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        }, 
+      
+        titleStyle: {
+          paddingTop:65,
+          marginLeft:-40,
+          padding: 10,
+          paddingBottom: -120
+          },
+      
+        pickerStyle: {
+          width:225,
+          paddingTop:50,
+          marginLeft:55,
+          marginRight: -40,
+          marginBottom:0
+          },
+          updBtn: {
+            padding: 10,
+            backgroundColor: '#000000'            
+            },
+            accept: {
+                marginLeft:200,
+                marginTop: 275,
+                height: 20, 
+                width: 130,
+            },
+        
+              cancel: {
+                marginLeft:0,
+                marginTop:-20,
+                height: 50, 
+                width: 130
+            },
     });
   
 
-export default ShiftTimingScreen;
+export default withNavigation(ShiftTimingScreen);

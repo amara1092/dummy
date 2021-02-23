@@ -11,7 +11,7 @@ navigation.openDrawer();
 
     return(
     <View style={styles.head}>
-            <MaterialIcons name='menu' size={35} onPress={openmenu} style={styles.icon} />
+            <MaterialIcons name='menu' size={30} onPress={openmenu} style={styles.icon} />
         <View>
                 <Text style={styles.headText}>{title}</Text>
         
@@ -30,7 +30,7 @@ head: {
 padding:2,
 marginLeft:-20,
 marginTop:-1,
-width: '110%',
+width: '120%',
 height:'160%',
 flexDirection: 'row',
 alignItems: 'center',
