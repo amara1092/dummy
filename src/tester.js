@@ -1,82 +1,125 @@
-import React, { Component } from "react";
-import {View, TextInput,Text, Button} from "react-native";
-import AsyncStorage from '@react-native-community/async-storage';
-import { Picker } from '@react-native-picker/picker'; 
+import React, { Component } from 'react';
+import { StyleSheet, FlatList, ActivityIndicator, View, Text } from 'react-native';
+import { ListItem, Button } from 'react-native-elements';
+import Database from '../src/Database';
 
-export default class tester extends Component {
-  constructor(props) {
-    super(props);
+const db = new Database();
+
+export default class ProductScreen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Product List',
+      headerRight: (
+        <Button
+          buttonStyle={{ padding: 0, backgroundColor: 'transparent' }}
+          icon={{ name: 'add-circle', style: { marginRight: 0, fontSize: 28 } }}
+          onPress={() => { 
+            navigation.navigate('Home', {
+              onNavigateBack: this.handleOnNavigateBack
+            }); 
+          }}
+        />
+      ),
+    };
+  };
+
+  constructor() {
+    super();
     this.state = {
-      name: "",
-      email: "",
-      gender: "",
-      educationLevel: "",
-      receivePromotion: false
+      isLoading: true,
+      products: [],
+      notFound: 'Products not found.\nPlease click (+) button to add it.'
     };
   }
 
-  async componentDidMount() {
-    try {
-      const result = JSON.parse(await AsyncStorage.getItem("personal_data"));
-
-      // populate the data
-      this.setState({...result}); // you probably won't understand what is triple dot doing
-      // Google for Javascript object spreading syntax
-      // Checkout https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
-
-    } catch (error) {
-      alert(error.message)
-    }
+  componentDidMount() {
+    this._subscribe = this.props.navigation.addListener('didFocus', () => {
+      this.getTimesheet();
+    });
   }
 
+  getTimesheet() {
+    let timesheets = [];
+    db.listTimesheet().then((data) => {
+      timesheets = data;
+      this.setState({
+        timesheets,
+        isLoading: false,
+      });
+    }).catch((err) => {
+      console.log(err);
+      this.setState = {
+        isLoading: false
+      }
+    })
+  }
+
+  keyExtractor = (item, index) => index.toString()
+
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.comment}
+
+      leftAvatar={{
+        title: item.comment[0]
+      }}
+      onPress={() => {
+        this.props.navigation.navigate('ProductDetails', {
+          prodId: `${item.siteID}`,
+        });
+      }}
+      chevron
+      bottomDivider
+    />
+  )
 
   render() {
+    if(this.state.isLoading){
+      return(
+        <View style={styles.activity}>
+          <ActivityIndicator size="large" color="#0000ff"/>
+        </View>
+      )
+    }
+    if(this.state.products.length === 0){
+      return(
+        <View>
+          <Text style={styles.message}>{this.state.notFound}</Text>
+        </View>
+      )
+    }
     return (
-      <View>
-        <TextInput placeholder="Name" value={this.state.name}
-          onChangeText={(name) => this.setState({name})} 
-        />
-
-        <TextInput placeholder="Email" value={this.state.email}
-          onChangeText={(email) => this.setState({email})} 
-        />
-
-        <Text>{"\n\nGender"}</Text>
-        <Picker mode="dropdown" selectedValue={this.state.gender} 
-          onValueChange={(itemValue, itemIndex) => {
-            this.setState({gender: itemValue})
-        }}>
-          <Picker.Item label="Male" value="m"/>
-          <Picker.Item label="Female" value="f" />
-        </Picker>
-
-        <Text>{"\n\nEducation level"}</Text>
-        <Picker mode="dropdown" selectedValue={this.state.educationLevel}
-          onValueChange={(educationLevel) => {this.setState({educationLevel})}} 
-        >
-          <Picker.Item label="High school" value="hs"/>
-          <Picker.Item label="Undergraduate" value="ug"/>
-          <Picker.Item label="Postgraduate" value="pg"/>
-        </Picker>
-
-        <Text>{"\n\nReceive promotions"}</Text>
-        <Picker selectedValue={this.state.receivePromotion} mode="dropdown"
-          onValueChange={(receivePromotion) => this.setState({receivePromotion})} 
-        >
-          <Picker.Item label="Yes" value="y"/>
-          <Picker.Item label="No" value="n"/>
-        </Picker>
-
-        <Button title="Update data" onPress={async () => {
-          try {
-            const result = await AsyncStorage.setItem("personal_data", JSON.stringify(this.state));
-            alert("Success");
-          } catch (error) {
-            alert(error.message);
-          }
-        }}/>
-
-      </View>
+      <FlatList
+        keyExtractor={this.keyExtractor}
+        data={this.state.products}
+        renderItem={this.renderItem}
+      />
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+   flex: 1,
+   paddingBottom: 22
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+  activity: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  message: {
+    padding: 16,
+    fontSize: 18,
+    color: 'red'
+  }
+});

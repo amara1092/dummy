@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, StyleSheet, Text, Button, TextInput} from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Text, Button, TextInput, ScrollView} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Database from '../src/Database';
 import XDate from 'xdate';
 import { withNavigation } from 'react-navigation';
 
+const db = new Database();
 
 
 class ShiftTimingScreen extends Component {
@@ -17,10 +19,17 @@ class ShiftTimingScreen extends Component {
         userType: '',
         name: '',
         description: '',
+        projNum: '',
+        siteID: '',
+        arrivalTime: '0',
+        departTime: '0',
+        totalHrs: '0',
+        isTravel: false,
+        comment:'',
+
         // The values, which we get from each of the DateTimePickers. 
         // These values can be saved into your app's state. 
-        ToSTimeValue: null,
-        ToTimeValue: null,
+        
 
         // for iOS & Android: When this flag is true, the relevant <DateTimePicker> is displayed
         isToSTimePickerVisible: false,
@@ -39,10 +48,45 @@ class ShiftTimingScreen extends Component {
         timePickerVisible: false,
     };
 
+    updateTextInput = (text, field) => {
+        const state = this.state
+        state[field] = text;
+        this.setState(state);
+      }
+
+      saveTimesheet() {
+        this.setState({
+          isLoading: true,
+        });
+  
+        let data = {
+            projNum: this.state.projNum,
+            siteID: this.state.siteID,
+            arrivalTime: this.state.arrivalTime,
+            departTime: this.state.departTime,
+            totalHrs: this.state.totalHrs,
+            isTravel: this.state.isTravel,
+            comment: this.state.comment
+          }
+          db.addTimesheet(data).then((result) => {
+            console.log(result);
+            this.setState({
+              isLoading: false,
+            });
+            this.props.navigation.state.params.onNavigateBack;
+            this.props.navigation.goBack();
+          }).catch((err) => {
+            console.log(err);
+            this.setState({
+              isLoading: false,
+            });
+          })
+        }
+
     saveStartingTime = (value) => {
         console.log("saveStartingTime - value:", value);
         this.setState({
-            ToSTimeValue: value,
+            arrivalTime: value,
         });
     };
 
@@ -50,7 +94,7 @@ class ShiftTimingScreen extends Component {
     saveEndingTime = (value) => {
         console.log("saveEndingTime - value:", value);
         this.setState({
-            ToTimeValue: value,
+            departTime: value,
         });
     };
 
@@ -85,6 +129,7 @@ class ShiftTimingScreen extends Component {
             const result = await AsyncStorage.setItem("personal_data", JSON.stringify(this.state));
             alert("Success");
             this.acceptHandler();
+            this.saveTimesheet();
             } catch (error) {
             alert(error.message);
             }  
@@ -92,7 +137,7 @@ class ShiftTimingScreen extends Component {
 
 
       renderUserNames() {
-        if(this.state.userType=='Freelancer'){
+        if(this.state.projNum=='Freelancer'){
          return [<Picker.Item key="uniqueID8" label="CE005 ~ Woodcock Hill" value="Freelancer 1" />,
                 <Picker.Item key="uniqueID7" label="CE006 ~ Crusheen knocknamucky" value="Freelancer 2" />,
                <Picker.Item key="uniqueID6" label="CE007 ~ Lack West" value="Freelancer 3" />,
@@ -100,7 +145,7 @@ class ShiftTimingScreen extends Component {
                <Picker.Item key="uniqueID4" label="CE009 ~ Glenagall" value="Freelancer 5" />]
         }
       
-        else if(this.state.userType=='ABO101597'){
+        else if(this.state.projNum=='ABO101597'){
           return [<Picker.Item key="uniqueID3" label="CLS001 ~ Cluster 1 OHL" value="ABO101597 1" />
                 ]
          }
@@ -117,7 +162,7 @@ class ShiftTimingScreen extends Component {
 
     fRenderDateTimePicker = (dateTimePickerVisible, visibilityVariableName, dateTimePickerMode, defaultValue, saveValueFunctionName ) => {
         // dateTimePickerVisible:   a flag, which is used to show/hide this DateTimePicker
-        // visibilityVariableName:              the name of the state variable, which controls showing/hiding this DateTimePicker. 
+        // visibilityVariableName:              the siteID of the state variable, which controls showing/hiding this DateTimePicker. 
             // The name of the variable is received in (visibilityVariableName), and the value of it is received in the argument (dateTimePickerVisible).
         // dateTimePickerMode:      the mode mode of this DateTimePicker
         // defaultValue:                the default value, which should be selected initially when the DatTimePicker is displayed 
@@ -125,6 +170,7 @@ class ShiftTimingScreen extends Component {
             // In my case it is a Redux's action creator, which saves the selected value in the app's state. 
 
         return (
+            
             <View>
 
 
@@ -310,6 +356,7 @@ class ShiftTimingScreen extends Component {
 
         return (
                 <View style={styles.container}>
+                <ScrollView>
                     {// This function would render the necessary DateTimePicker only if the relevant state variable is set (above)
                     this.fRenderDateTimePicker(
                         this.state.isStartingDateTimePickerVisible,
@@ -346,7 +393,7 @@ class ShiftTimingScreen extends Component {
                             label='Start Work'
                             placeholder={"09:00 AM"}
                             editable={false}
-                            value={this.fFormatDateTime(this.state.ToSTimeValue, "time")}
+                            value={this.fFormatDateTime(this.state.arrivalTime, "time")}
                         />
                     </TouchableOpacity>
                     {this.fRenderDateTimePicker(
@@ -369,7 +416,7 @@ class ShiftTimingScreen extends Component {
                             label='Finish Work'
                             placeholder={"09:00 AM"}
                             editable={false}
-                            value={this.fFormatDateTime(this.state.ToTimeValue, "time")}
+                            value={this.fFormatDateTime(this.state.departTime, "time")}
                         />
                     </TouchableOpacity>
                     {this.fRenderDateTimePicker(
@@ -390,9 +437,9 @@ class ShiftTimingScreen extends Component {
               <View style={styles.pickerStyle}>
                   {<Picker
                       mode='dropdown'
-                      selectedValue={this.state.userType}
+                      selectedValue={this.state.projNum}
                       onValueChange={(itemValue, itemIndex) =>
-                          this.setState({ userType: itemValue })
+                          this.setState({ projNum: itemValue })
                       }>
                       <Picker.Item key="uniqueID9" label="Please Select" value="" />
                       <Picker.Item key="uniqueID10" label="VOD103015 ~ Assure Provide engsupport Oct 1st to Oct 31st 2019" value="Freelancer" />
@@ -406,9 +453,9 @@ class ShiftTimingScreen extends Component {
               <View style={styles.pickerStyle}>
                   {<Picker
                       mode='dropdown'
-                      selectedValue={this.state.name}
+                      selectedValue={this.state.siteID}
                       onValueChange={(itemValue, itemIndex) =>
-                          this.setState({ name: itemValue })
+                          this.setState({ siteID: itemValue })
                       }>
                       <Picker.Item label="Please Select" value="" />
                            {options}
@@ -417,6 +464,18 @@ class ShiftTimingScreen extends Component {
               </View>
           </View>
          </View>
+
+         <View style={styles.desprc}>
+            <TextInput
+                        underlineColorAndroid = "transparent" 
+                        placeholder="Description"
+                        placeholderTextColor = "#9a73ef"
+                        onChangeText={(text) => this.handleDesription(text,'comment')}
+                        style={styles.input}     
+                        />
+            </View>
+
+
             <View>
                 <View style={styles.accept}>
                      <Button backgroundColor='#000000' color='#1df557' title="Confirm" onPress={
@@ -428,18 +487,9 @@ class ShiftTimingScreen extends Component {
                 </View>
             </View>
 
-            <View style={styles.desprc}>
-            <TextInput
-                        underlineColorAndroid = "transparent" 
-                        placeholder="Description"
-                        placeholderTextColor = "#9a73ef"
-                        onChangeText={this.handleDesription}
-                        style={styles.input}     
-                        />
-            </View>
-
            
            
+            </ScrollView>
         </View>
         );
     } // end of: render()
@@ -462,8 +512,8 @@ const styles = StyleSheet.create({
         height: 150, 
         width: 300,
         paddingBottom: 100,
-        marginTop: -125,
-        marginBottom: 800,
+        marginTop: 225,
+        marginBottom: -210,
         borderWidth: 1,
         color: '#000000'
      },
@@ -501,17 +551,16 @@ const styles = StyleSheet.create({
       
         titleStyle: {
           paddingTop:65,
-          marginLeft:-40,
-          padding: 10,
+          marginLeft:0,
+          padding:0,
           paddingBottom: -120
           },
       
         pickerStyle: {
           width:225,
           paddingTop:50,
-          marginLeft:55,
+          marginLeft:5,
           marginRight: -40,
-          marginBottom:0
           },
           updBtn: {
             padding: 10,
@@ -519,7 +568,7 @@ const styles = StyleSheet.create({
             },
             accept: {
                 marginLeft:200,
-                marginTop: 275,
+                marginTop: -555,
                 height: 20, 
                 width: 130,
             },
