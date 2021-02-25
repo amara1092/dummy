@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { StyleSheet, FlatList, ActivityIndicator, View, Text } from 'react-native';
 import { ListItem, Button } from 'react-native-elements';
 import Database from '../src/Database';
+import { withNavigation } from 'react-navigation';
 
 const db = new Database();
 
-export default class ProductScreen extends Component {
+class TimesheetScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Product List',
@@ -38,6 +39,10 @@ export default class ProductScreen extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this._subscribe.remove();
+    }
+
   getTimesheet() {
     let timesheets = [];
     db.listTimesheet().then((data) => {
@@ -65,7 +70,7 @@ export default class ProductScreen extends Component {
       }}
       onPress={() => {
         this.props.navigation.navigate('ProductDetails', {
-          prodId: `${item.siteID}`,
+          siteID: `${item.siteID}`,
         });
       }}
       chevron
@@ -81,7 +86,7 @@ export default class ProductScreen extends Component {
         </View>
       )
     }
-    if(this.state.products.length === 0){
+    if(this.state.timesheets.length === 0){
       return(
         <View>
           <Text style={styles.message}>{this.state.notFound}</Text>
@@ -91,7 +96,7 @@ export default class ProductScreen extends Component {
     return (
       <FlatList
         keyExtractor={this.keyExtractor}
-        data={this.state.products}
+        data={this.state.timesheets}
         renderItem={this.renderItem}
       />
     );
@@ -123,3 +128,4 @@ const styles = StyleSheet.create({
     color: 'red'
   }
 });
+export default withNavigation(TimesheetScreen);

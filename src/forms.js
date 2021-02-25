@@ -16,9 +16,7 @@ class ShiftTimingScreen extends Component {
     state = {
 
         dayoftheweek:'',
-        userType: '',
-        name: '',
-        description: '',
+       
         projNum: '',
         siteID: '',
         arrivalTime: '0',
