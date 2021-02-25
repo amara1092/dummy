@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, StyleSheet, Text, Button, TextInput, ScrollView} from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Text, Button, TextInput, ScrollView, Alert, Modal, Pressable} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Database from '../src/Database';
+import TimePicker from '../src/timepicker.js';
 import XDate from 'xdate';
 import { withNavigation } from 'react-navigation';
 
@@ -16,7 +17,7 @@ class ShiftTimingScreen extends Component {
     state = {
 
         dayoftheweek:'',
-       
+        modalVisible: false,
         projNum: '',
         siteID: '',
         arrivalTime: '0',
@@ -24,6 +25,7 @@ class ShiftTimingScreen extends Component {
         totalHrs: '0',
         isTravel: false,
         comment:'',
+        dayoftheweek:'',
 
         // The values, which we get from each of the DateTimePickers. 
         // These values can be saved into your app's state. 
@@ -45,6 +47,11 @@ class ShiftTimingScreen extends Component {
         // (2) ONLY FOR ANDROID: When the timePickerVisible flag is true, the <DateTimePicker> is displayed in "time" mode
         timePickerVisible: false,
     };
+
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+      }
+    
 
     updateTextInput = (text, field) => {
         const state = this.state
@@ -352,6 +359,8 @@ class ShiftTimingScreen extends Component {
 
         let options=this.renderUserNames();
 
+        const { modalVisible } = this.state;
+
         return (
                 <View style={styles.container}>
                 <ScrollView>
@@ -380,7 +389,109 @@ class ShiftTimingScreen extends Component {
                         // YOU NEED TO REPLACE IT WITH SOMETHING RELEVANT TO YOUR APP. 
                         this.saveEndingDate,
                     )}
-                    
+                    <View style={styles.props}>
+                    <View style={styles.dayoftheweek}>
+                    <View style={styles.dayoftheweekTitle}>
+                    <Text>
+                        Day of the Week 
+                    </Text>
+
+                     </View>
+                            <Picker style={styles.datefive}
+                    selectedValue={this.state.days}
+                    onValueChange=
+                    {
+                        (itemValue, itemIndex) => this.setState({days: itemValue})
+                    }>
+                            <Picker.Item label="Monday" value="monday" />
+                            <Picker.Item label="Tuesday" value="tuesday" />
+                            <Picker.Item label="Wednesday" value="wednesday" />
+                            <Picker.Item label="Thursday" value="thursday" />
+                            <Picker.Item label="Friday" value="friday" />
+                            <Picker.Item label="Saturday" value="saturday" />
+                            <Picker.Item label="Sunday" value="sunday" />
+                           
+                            </Picker>
+                            </View>
+                            </View>
+
+                    <View style={styles.btn}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.titleStyle}>Project No</Text>
+              <View style={styles.pickerStyle}>
+                  {<Picker
+                      mode='dropdown'
+                      selectedValue={this.state.projNum}
+                      onValueChange={(itemValue, itemIndex) =>
+                          this.setState({ projNum: itemValue })
+                      }>
+                      <Picker.Item key="uniqueID9" label="Please Select" value="" />
+                      <Picker.Item key="uniqueID10" label="VOD103015 ~ Assure Provide engsupport Oct 1st to Oct 31st 2019" value="Freelancer" />
+                      <Picker.Item key="uniqueID11" label="ABO101597 ~ Over head Line works Cluster 1 ~ CLS001 ~ Cluster1 OHL" value="ABO101597" />
+                      <Picker.Item key="uniqueID12" label="Client" value="Client" />
+                  </Picker>}
+              </View>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.titleStyle}>Name</Text>
+              <View style={styles.pickerStyle}>
+                  {<Picker
+                      mode='dropdown'
+                      selectedValue={this.state.siteID}
+                      onValueChange={(itemValue, itemIndex) =>
+                          this.setState({ siteID: itemValue })
+                      }>
+                      <Picker.Item label="Please Select" value="" />
+                           {options}
+  
+                  </Picker>}
+              </View>
+          </View>
+         </View>
+
+         <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            this.setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TimePicker/>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>Hide Modal</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => this.setModalVisible(true)}
+        >
+          <Text style={styles.textStyle}>Lunch</Text>
+        </Pressable>
+      </View>
+
+
+         <View style={styles.desprc}>
+            <TextInput
+                        underlineColorAndroid = "transparent" 
+                        placeholder="Description"
+                        placeholderTextColor = "#9a73ef"
+                        onChangeText={(text) => this.handleDesription(text,'comment')}
+                        style={styles.input}     
+                        />
+            </View>
+
+
+
                     <View style={styles.props}>
                     <TouchableOpacity style={styles.startlunch}
                         onPress={() => {
@@ -429,51 +540,7 @@ class ShiftTimingScreen extends Component {
                     )}
                     </View>
 
-                <View style={styles.btn}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.titleStyle}>Project No</Text>
-              <View style={styles.pickerStyle}>
-                  {<Picker
-                      mode='dropdown'
-                      selectedValue={this.state.projNum}
-                      onValueChange={(itemValue, itemIndex) =>
-                          this.setState({ projNum: itemValue })
-                      }>
-                      <Picker.Item key="uniqueID9" label="Please Select" value="" />
-                      <Picker.Item key="uniqueID10" label="VOD103015 ~ Assure Provide engsupport Oct 1st to Oct 31st 2019" value="Freelancer" />
-                      <Picker.Item key="uniqueID11" label="ABO101597 ~ Over head Line works Cluster 1 ~ CLS001 ~ Cluster1 OHL" value="ABO101597" />
-                      <Picker.Item key="uniqueID12" label="Client" value="Client" />
-                  </Picker>}
-              </View>
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.titleStyle}>Name</Text>
-              <View style={styles.pickerStyle}>
-                  {<Picker
-                      mode='dropdown'
-                      selectedValue={this.state.siteID}
-                      onValueChange={(itemValue, itemIndex) =>
-                          this.setState({ siteID: itemValue })
-                      }>
-                      <Picker.Item label="Please Select" value="" />
-                           {options}
-  
-                  </Picker>}
-              </View>
-          </View>
-         </View>
-
-         <View style={styles.desprc}>
-            <TextInput
-                        underlineColorAndroid = "transparent" 
-                        placeholder="Description"
-                        placeholderTextColor = "#9a73ef"
-                        onChangeText={(text) => this.handleDesription(text,'comment')}
-                        style={styles.input}     
-                        />
-            </View>
-
-
+                    
             <View>
                 <View style={styles.accept}>
                      <Button backgroundColor='#000000' color='#1df557' title="Confirm" onPress={
@@ -517,24 +584,24 @@ const styles = StyleSheet.create({
      },
 
       startlunch: {
-       marginTop: 50,
+       marginTop: -825,
        marginLeft:-170,
        
       },
 
       endlunch: {
-        marginTop:-88,
+        marginTop:-825,
         marginLeft:100
        },
 
        dayoftheweekTitle: {
-           marginTop: 80,
+           marginTop: 40,
            width:300
         },
 
        dayoftheweek: {
-       marginTop: 40,
-       marginBottom: -200
+       marginTop: 0,
+       marginBottom: 0
        },
   
       text: {
@@ -548,22 +615,65 @@ const styles = StyleSheet.create({
         }, 
       
         titleStyle: {
-          paddingTop:65,
-          marginLeft:0,
-          padding:0,
-          paddingBottom: -120
+          marginLeft:20,
+          marginTop:10,
+          padding:-10,
           },
       
         pickerStyle: {
           width:225,
-          paddingTop:50,
           marginLeft:5,
+          padding: -15,
+          marginTop:35,
           marginRight: -40,
           },
           updBtn: {
             padding: 10,
             backgroundColor: '#000000'            
             },
+
+
+            centeredView: {
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 0
+              },
+              modalView: {
+                margin: 20,
+                backgroundColor: "white",
+                borderRadius: 20,
+                padding: 35,
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5
+              },
+              button: {
+                borderRadius: 20,
+                padding: 10,
+                elevation: 2
+              },
+              buttonOpen: {
+                backgroundColor: "#F194FF",
+              },
+              buttonClose: {
+                backgroundColor: "#2196F3",
+              },
+              textStyle: {
+                color: "white",
+                fontWeight: "bold",
+                textAlign: "center"
+              },
+              modalText: {
+                marginBottom: 15,
+                textAlign: "center"
+              },
             accept: {
                 marginLeft:200,
                 marginTop: -555,

@@ -31,7 +31,7 @@ export default class Database {
                       console.log("Received error: ", error);
                       console.log("Database not yet ready ... populating data");
                       db.transaction((tx) => {
-                          tx.executeSql('CREATE TABLE IF NOT EXISTS Timesheet (id_timesheet, user_id, eow, projNum, comment, arrivalTime, departTime, totalHrs, siteID, isTravel, timeInserted)');
+                          tx.executeSql('CREATE TABLE IF NOT EXISTS Timesheet (id_timesheet BIGINT(20), user_id BIGINT(20), eow DATE, date DATETIME, projNum VARCHAR(10), comment VARCHAR(250), arrivalTime TIME, departTime TIME, totalHrs FLOAT, siteID VARCHAR(45), isTravel SMALLINT(2), timeInserted DATETIME)');
                       }).then(() => {
                           console.log("Table created successfully");
                       }).catch(error => {
