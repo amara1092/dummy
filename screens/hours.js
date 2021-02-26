@@ -9,7 +9,7 @@ export default function Hour ({ navigation }) {
 
  const acceptHandler = () => 
  {
-   navigation.navigate('Homend')
+   navigation.navigate('Home')
  }
  const cancelHandler = () => 
  {

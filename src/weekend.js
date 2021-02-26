@@ -10,7 +10,7 @@ export default class WeekSelect extends React.Component {
     selectedWeek: null,
   }
   saveStartingWeek = (value) => {
-    console.log("saveStartingWeek - value:", value + 1);
+    console.log("saveStartingWeek - value:", value);
     this.setState({
       selectedWeek: value,
     });

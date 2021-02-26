@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { TouchableOpacity, View, StyleSheet, Text, Button, TextInput, ScrollView, Alert, Modal, Pressable} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Database from '../src/Database';
 import TimePicker from '../src/timepicker.js';
 import XDate from 'xdate';
 import { withNavigation } from 'react-navigation';
+import { DatabaseConnection } from '../src/database-connection';
 
-const db = new Database();
-
+const db = DatabaseConnection.getConnection();
 
 class ShiftTimingScreen extends Component {
 
@@ -47,7 +46,50 @@ class ShiftTimingScreen extends Component {
         // (2) ONLY FOR ANDROID: When the timePickerVisible flag is true, the <DateTimePicker> is displayed in "time" mode
         timePickerVisible: false,
     };
-
+    
+ 
+     
+       register_user = () => {
+        console.log('2021-02-14T00:00:00.000Z','2016-08-30 18:47:56', this.state.projNum, this.state.comment, this.state.arrivalTime, this.state.departTime, 0, this.state.siteID );
+    
+        if (!this.state.projNum) {
+          alert('Por favor preencha o nome !');
+          return;
+        }
+        if (!userContact) {
+          alert('Por favor preencha o contato');
+          return;
+        }
+        if (!userAddress) {
+          alert('Por favor preencha o endereço !');
+          return;
+        }
+    
+        db.transaction(function (tx) {
+          tx.executeSql(
+            'INSERT INTO table_user (eow, date, projNum, comment , arrivalTime , departTime, totalHrs, siteID) VALUES (?,?,?,?,?,?,?,?)',
+            ['2021-02-14T00:00:00.000Z','2016-08-30 18:47:56', this.state.projNum, this.state.comment, this.state.arrivalTime, this.state.departTime, 0, this.state.siteID ],
+            (tx, results) => {
+              console.log('Results', results.rowsAffected);
+              if (results.rowsAffected > 0) {
+                Alert.alert(
+                  'Sucesso',
+                  'Usuário Registrado com Sucesso !!!',
+                  [
+                    {
+                      text: 'Ok',
+                      onPress: () => navigation.navigate('HomeScreen'),
+                    },
+                  ],
+                  { cancelable: false }
+                );
+              } else alert('Erro ao tentar Registrar o Usuário !!!');
+            }
+          );
+        });
+      };
+      
+    
     setModalVisible = (visible) => {
         this.setState({ modalVisible: visible });
       }
@@ -58,36 +100,7 @@ class ShiftTimingScreen extends Component {
         state[field] = text;
         this.setState(state);
       }
-
-      saveTimesheet() {
-        this.setState({
-          isLoading: true,
-        });
-  
-        let data = {
-            projNum: this.state.projNum,
-            siteID: this.state.siteID,
-            arrivalTime: this.state.arrivalTime,
-            departTime: this.state.departTime,
-            totalHrs: this.state.totalHrs,
-            isTravel: this.state.isTravel,
-            comment: this.state.comment
-          }
-          db.addTimesheet(data).then((result) => {
-            console.log(result);
-            this.setState({
-              isLoading: false,
-            });
-            this.props.navigation.state.params.onNavigateBack;
-            this.props.navigation.goBack();
-          }).catch((err) => {
-            console.log(err);
-            this.setState({
-              isLoading: false,
-            });
-          })
-        }
-
+    
     saveStartingTime = (value) => {
         console.log("saveStartingTime - value:", value);
         this.setState({
@@ -126,7 +139,7 @@ class ShiftTimingScreen extends Component {
     this.props.navigation.navigate('Lunch');
     }
     handleDesription = (text) => {
-        this.setState({description: text})
+        this.setState({comment: text})
     }
 
     UpdateContent = async () => {
@@ -134,7 +147,7 @@ class ShiftTimingScreen extends Component {
             const result = await AsyncStorage.setItem("personal_data", JSON.stringify(this.state));
             alert("Success");
             this.acceptHandler();
-            this.saveTimesheet();
+            this.register_user();
             } catch (error) {
             alert(error.message);
             }  
@@ -142,12 +155,12 @@ class ShiftTimingScreen extends Component {
 
 
       renderUserNames() {
-        if(this.state.projNum=='Freelancer'){
-         return [<Picker.Item key="uniqueID8" label="CE005 ~ Woodcock Hill" value="Freelancer 1" />,
-                <Picker.Item key="uniqueID7" label="CE006 ~ Crusheen knocknamucky" value="Freelancer 2" />,
-               <Picker.Item key="uniqueID6" label="CE007 ~ Lack West" value="Freelancer 3" />,
-               <Picker.Item key="uniqueID5" label="CE008 ~ Dangan Ballyvaughan" value="Freelancer 4" />,
-               <Picker.Item key="uniqueID4" label="CE009 ~ Glenagall" value="Freelancer 5" />]
+        if(this.state.projNum=='VOD103015'){
+         return [<Picker.Item key="uniqueID8" label="CE005 ~ Woodcock Hill" value="VOD103015 1" />,
+                <Picker.Item key="uniqueID7" label="CE006 ~ Crusheen knocknamucky" value="VOD103015 2" />,
+               <Picker.Item key="uniqueID6" label="CE007 ~ Lack West" value="VOD103015 3" />,
+               <Picker.Item key="uniqueID5" label="CE008 ~ Dangan Ballyvaughan" value="VOD103015 4" />,
+               <Picker.Item key="uniqueID4" label="CE009 ~ Glenagall" value="VOD103015 5" />]
         }
       
         else if(this.state.projNum=='ABO101597'){
@@ -426,7 +439,7 @@ class ShiftTimingScreen extends Component {
                           this.setState({ projNum: itemValue })
                       }>
                       <Picker.Item key="uniqueID9" label="Please Select" value="" />
-                      <Picker.Item key="uniqueID10" label="VOD103015 ~ Assure Provide engsupport Oct 1st to Oct 31st 2019" value="Freelancer" />
+                      <Picker.Item key="uniqueID10" label="VOD103015 ~ Assure Provide engsupport Oct 1st to Oct 31st 2019" value="VOD103015" />
                       <Picker.Item key="uniqueID11" label="ABO101597 ~ Over head Line works Cluster 1 ~ CLS001 ~ Cluster1 OHL" value="ABO101597" />
                       <Picker.Item key="uniqueID12" label="Client" value="Client" />
                   </Picker>}
